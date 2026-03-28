@@ -76,4 +76,8 @@ class CargoController extends Controller
         return redirect()->route('cargos.index')
                          ->with('success', 'Cargo eliminado correctamente');
     }
+    public function show(Cargo $cargo)
+{
+    return view('cargos.show', compact('cargo'));
+}
 }

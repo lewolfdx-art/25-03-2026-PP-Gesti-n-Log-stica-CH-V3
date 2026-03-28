@@ -184,6 +184,10 @@
                 <i class="fas fa-users"></i> CRUD-Trabajadores
             </a>
 
+            <a href="{{ route('subcategorias.index') }}" class="menu-item {{ request()->is('subcategorias-gastos*') ? 'active' : '' }}">
+                <i class="fas fa-tags"></i> CRUD-Subcategorías de gasto
+            </a>
+
             <!-- ==================== CARGOS CON SUBMENÚ ==================== -->
             <a href="#" class="menu-item" id="cargos-toggle">
                 <i class="fas fa-clipboard-list"></i> Cargos

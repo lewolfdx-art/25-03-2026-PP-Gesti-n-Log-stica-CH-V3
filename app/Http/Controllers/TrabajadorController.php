@@ -113,4 +113,8 @@ class TrabajadorController extends Controller
         return redirect()->route('trabajadores.index')
             ->with('success', 'Trabajador eliminado correctamente');
     }
+    public function show(Trabajador $trabajador)
+{
+    return view('trabajadores.show', compact('trabajador'));
+}
 }

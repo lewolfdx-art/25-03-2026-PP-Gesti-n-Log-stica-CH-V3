@@ -5,6 +5,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoriaGastoController;
 use App\Http\Controllers\TrabajadorController;
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\SubcategoriaGastoController;
+
+
 // Rutas públicas
 Route::get('/', function () {
     return redirect()->route('login');
@@ -33,5 +36,16 @@ Route::middleware('auth')->group(function () {
             'trabajadores' => 'trabajador'
         ]);
     // ==================== NUEVO: CRUD CARGOS ====================
-    Route::resource('cargos', CargoController::class);
+   
+    Route::resource('cargos', CargoController::class)
+    ->parameters([
+        'cargos' => 'cargo'
+    ]);
+
+    Route::resource('subcategorias-gastos', SubcategoriaGastoController::class)
+    ->names('subcategorias')
+    ->parameters([
+        'subcategorias-gastos' => 'subcategoria'
+    ]);
+
 });

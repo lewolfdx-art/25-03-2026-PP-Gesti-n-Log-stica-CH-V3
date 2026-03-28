@@ -106,4 +106,3 @@
         estadoFilter.addEventListener('change', filtrar);
     });
 </script>
-
