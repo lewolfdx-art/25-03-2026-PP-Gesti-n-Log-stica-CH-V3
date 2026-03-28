@@ -4,49 +4,73 @@
 
 @section('content')
 <div class="card">
+
+    <!-- HEADER -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0; color: var(--primary);">Lista de Cargos</h2>
-        <a href="{{ route('cargos.create') }}" class="btn" 
+
+        <a href="{{ route('cargos.create') }}"
            style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none;">
             <i class="fas fa-plus"></i> Nuevo Cargo
         </a>
     </div>
 
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background: #222;">
-                <th style="padding: 12px; text-align: left;">ID</th>
-                <th style="padding: 12px; text-align: left;">Nombre</th>
-                <th style="padding: 12px; text-align: center;">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($cargos as $cargo)
-                <tr style="border-bottom: 1px solid #333;">
-                    <td style="padding: 12px;">{{ $cargo->id }}</td>
-                    <td style="padding: 12px;">{{ $cargo->nombre }}</td>
-                    <td style="padding: 12px; text-align: center;">
-                        <a href="{{ route('cargos.show', $cargo) }}" class="btn" style="background:#444; color:white; padding:6px 12px; border-radius:5px; text-decoration:none;">Ver</a>
-                        <a href="{{ route('cargos.edit', $cargo) }}" class="btn" style="background:#ff8800; color:white; padding:6px 12px; border-radius:5px; text-decoration:none;">Editar</a>
-                        <form action="{{ route('cargos.destroy', $cargo) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn" 
-                                    style="background:#cc0000; color:white; padding:6px 12px; border-radius:5px; border:none; cursor:pointer;"
-                                    onclick="return confirm('¿Estás seguro de eliminar este cargo?')">
-                                Eliminar
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3" style="padding: 20px; text-align: center; color: #888;">
-                        No hay cargos registrados aún.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <!-- 🔎 BUSCADOR -->
+    <div style="margin-bottom: 20px;">
+        <input type="text"
+               id="search-input"
+               placeholder="Buscar cargo..."
+               style="width: 100%; padding: 12px; border-radius: 8px; background: #222; color: white; border: 1px solid #444;">
+    </div>
+
+    <!-- 📄 TABLA DINÁMICA -->
+    <div id="tabla-contenido">
+        @include('cargos.tabla')
+    </div>
+
 </div>
 @endsection
+
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const searchInput = document.getElementById('search-input');
+    const tabla = document.getElementById('tabla-contenido');
+
+    // 🔥 FUNCIÓN PRINCIPAL
+    function filtrar(url = null) {
+        const params = new URLSearchParams();
+
+        if (searchInput.value.trim() !== '') {
+            params.append('search', searchInput.value.trim());
+        }
+
+        let finalUrl = url ?? "{{ route('cargos.index') }}?" + params.toString();
+
+        fetch(finalUrl, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.text())
+        .then(html => {
+            tabla.innerHTML = html;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // 🔎 BUSCADOR EN TIEMPO REAL
+    searchInput.addEventListener('keyup', () => filtrar());
+
+    // 📄 PAGINACIÓN AJAX
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.pagination a')) {
+            e.preventDefault();
+
+            let url = e.target.closest('a').getAttribute('href');
+            filtrar(url);
+        }
+    });
+
+});
+</script>

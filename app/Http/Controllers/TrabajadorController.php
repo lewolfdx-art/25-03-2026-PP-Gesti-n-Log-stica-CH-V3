@@ -34,13 +34,14 @@ class TrabajadorController extends Controller
             })
 
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         // Para los filtros del select en index.blade.php
         $cargos = Cargo::orderBy('nombre')->get();
 
         if ($request->ajax()) {
-            return view('trabajadores.tabla', compact('trabajadores'))->render();
+            return view('trabajadores.tabla', compact('trabajadores'));
         }
 
         return view('trabajadores.index', compact('trabajadores', 'cargos'));

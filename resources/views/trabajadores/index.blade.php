@@ -75,34 +75,48 @@
 
 @section('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const searchInput   = document.getElementById('search-input');
+    const cargoFilter   = document.getElementById('cargo-filter');
+    const estadoFilter  = document.getElementById('estado-filter');
+    const tablaContenido = document.getElementById('tabla-contenido');
+
+    function filtrar(url = null) {
+        const params = new URLSearchParams();
         
-        const searchInput   = document.getElementById('search-input');
-        const cargoFilter   = document.getElementById('cargo-filter');
-        const estadoFilter  = document.getElementById('estado-filter');
-        const tablaContenido = document.getElementById('tabla-contenido');
+        if (searchInput.value.trim() !== '') params.append('search', searchInput.value.trim());
+        if (cargoFilter.value !== '') params.append('cargo', cargoFilter.value);
+        if (estadoFilter.value !== '') params.append('estado', estadoFilter.value);
 
-        function filtrar() {
-            const params = new URLSearchParams();
-            
-            if (searchInput.value.trim() !== '') params.append('search', searchInput.value.trim());
-            if (cargoFilter.value !== '') params.append('cargo', cargoFilter.value);
-            if (estadoFilter.value !== '') params.append('estado', estadoFilter.value);
+        let finalUrl = url ?? "{{ route('trabajadores.index') }}?" + params.toString();
 
-            fetch("{{ route('trabajadores.index') }}?" + params.toString(), {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => response.text())
-            .then(html => {
-                tablaContenido.innerHTML = html;
-            })
-            .catch(error => {
-                console.error('Error al filtrar:', error);
-            });
+        fetch(finalUrl, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+            tablaContenido.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // 🔎 Filtros
+    searchInput.addEventListener('keyup', () => filtrar());
+    cargoFilter.addEventListener('change', () => filtrar());
+    estadoFilter.addEventListener('change', () => filtrar());
+
+    // 📄 PAGINACIÓN AJAX
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.pagination a')) {
+            e.preventDefault();
+
+            let url = e.target.closest('a').getAttribute('href');
+            filtrar(url);
         }
-
-        searchInput.addEventListener('keyup', filtrar);
-        cargoFilter.addEventListener('change', filtrar);
-        estadoFilter.addEventListener('change', filtrar);
     });
+
+});
 </script>

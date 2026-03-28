@@ -60,21 +60,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoriaFilter = document.getElementById('categoria-filter');
     const tabla = document.getElementById('tabla-contenido');
 
-    function filtrar() {
+    // 🔥 FUNCION PRINCIPAL
+    function filtrar(page = null) {
         const params = new URLSearchParams();
 
         if (searchInput.value) params.append('search', searchInput.value);
         if (categoriaFilter.value) params.append('categoria', categoriaFilter.value);
+        if (page) params.append('page', page);
 
         fetch("{{ route('subcategorias.index') }}?" + params.toString(), {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })
         .then(res => res.text())
-        .then(html => tabla.innerHTML = html);
+        .then(html => {
+            tabla.innerHTML = html;
+            asignarPaginacion(); // 🔥 importante
+        });
     }
 
-    searchInput.addEventListener('keyup', filtrar);
-    categoriaFilter.addEventListener('change', filtrar);
+    // 🔥 EVENTOS FILTROS
+    searchInput.addEventListener('keyup', () => filtrar());
+    categoriaFilter.addEventListener('change', () => filtrar());
+
+    // 🔥 PAGINACIÓN AJAX
+    function asignarPaginacion() {
+        document.querySelectorAll('#tabla-contenido a').forEach(link => {
+            if (link.href.includes('page=')) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const url = new URL(this.href);
+                    const page = url.searchParams.get('page');
+
+                    filtrar(page);
+                });
+            }
+        });
+    }
+
+    // inicializar paginación
+    asignarPaginacion();
 
 });
 </script>

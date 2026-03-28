@@ -10,9 +10,25 @@ class CargoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cargos = Cargo::all();
+        $query = Cargo::query();
+
+        // 🔎 BÚSQUEDA
+        if ($request->filled('search')) {
+            $query->where('nombre', 'like', '%' . $request->search . '%');
+        }
+
+        // 📄 PAGINACIÓN
+        $cargos = $query->orderBy('id', 'desc')
+                        ->paginate(10)
+                        ->appends($request->all());
+
+        // 🔥 AJAX (solo devuelve la tabla)
+        if ($request->ajax()) {
+            return view('cargos.tabla', compact('cargos'))->render();
+        }
+
         return view('cargos.index', compact('cargos'));
     }
 
@@ -39,6 +55,14 @@ class CargoController extends Controller
 
         return redirect()->route('cargos.index')
                          ->with('success', 'Cargo creado correctamente');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Cargo $cargo)
+    {
+        return view('cargos.show', compact('cargo'));
     }
 
     /**
@@ -76,8 +100,4 @@ class CargoController extends Controller
         return redirect()->route('cargos.index')
                          ->with('success', 'Cargo eliminado correctamente');
     }
-    public function show(Cargo $cargo)
-{
-    return view('cargos.show', compact('cargo'));
-}
 }

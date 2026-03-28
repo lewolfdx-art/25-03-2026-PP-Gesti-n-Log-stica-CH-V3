@@ -28,7 +28,7 @@
                  color: white; 
                  padding: 6px 14px; 
                  border-radius: 9999px; 
-                 font-size: 13px;           /* ← más pequeño */
+                 font-size: 13px;
                  font-weight: 500;
                  display: inline-block;
                  max-width: 100%;
@@ -86,3 +86,50 @@
         </tbody>
     </table>
 </div>
+
+@if($trabajadores->hasPages())
+<div style="padding: 20px; display: flex; justify-content: center;">
+    <ul style="display: flex; list-style: none; gap: 6px; margin: 0; padding: 0;">
+
+        @if ($trabajadores->onFirstPage())
+            <li style="padding: 8px 12px; color: #666;">«</li>
+        @else
+            <li>
+                <a href="{{ $trabajadores->previousPageUrl() }}" 
+                   style="padding: 8px 12px; background: rgba(255,255,255,0.08); border-radius: 6px; color: white; text-decoration: none;">
+                    «
+                </a>
+            </li>
+        @endif
+
+        @foreach ($trabajadores->getUrlRange(1, $trabajadores->lastPage()) as $page => $url)
+            @if ($page == $trabajadores->currentPage())
+                <li>
+                    <span style="padding: 8px 12px; background: var(--primary); color: white; border-radius: 6px;">
+                        {{ $page }}
+                    </span>
+                </li>
+            @else
+                <li>
+                    <a href="{{ $url }}" 
+                       style="padding: 8px 12px; background: rgba(255,255,255,0.08); border-radius: 6px; color: white; text-decoration: none;">
+                        {{ $page }}
+                    </a>
+                </li>
+            @endif
+        @endforeach
+
+        @if ($trabajadores->hasMorePages())
+            <li>
+                <a href="{{ $trabajadores->nextPageUrl() }}" 
+                   style="padding: 8px 12px; background: rgba(255,102,0,0.2); border-radius: 6px; color: var(--primary); text-decoration: none;">
+                    »
+                </a>
+            </li>
+        @else
+            <li style="padding: 8px 12px; color: #666;">»</li>
+        @endif
+
+    </ul>
+</div>
+@endif

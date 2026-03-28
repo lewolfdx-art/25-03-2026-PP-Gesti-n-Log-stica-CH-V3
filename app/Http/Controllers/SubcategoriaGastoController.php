@@ -32,7 +32,7 @@ class SubcategoriaGastoController extends Controller
             })
     
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(10)->appends($request->all());
     
         // Para el filtro
         $categorias = CategoriaGasto::where('activa', true)
@@ -40,8 +40,8 @@ class SubcategoriaGastoController extends Controller
                         ->get();
     
         if ($request->ajax()) {
-            return view('subcategorias.tabla', compact('subcategorias'))->render();
-        }
+                return view('subcategorias.tabla', compact('subcategorias'))->render();
+            }
     
         return view('subcategorias.index', compact('subcategorias', 'categorias'));
     }
