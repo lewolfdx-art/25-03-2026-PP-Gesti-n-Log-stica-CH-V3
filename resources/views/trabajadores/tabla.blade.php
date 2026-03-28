@@ -5,7 +5,7 @@
                 <th style="padding: 18px 15px; text-align: left; color: var(--primary); font-weight: 600;">ID</th>
                 <th style="padding: 18px 15px; text-align: left; color: var(--primary); font-weight: 600;">Nombre Completo</th>
                 <th style="padding: 18px 15px; text-align: left; color: var(--primary); font-weight: 600;">DNI</th>
-                <th style="padding: 18px 15px; text-align: left; color: var(--primary); font-weight: 600;">Tipo</th>
+                <th style="padding: 18px 15px; text-align: left; color: var(--primary); font-weight: 600;">Cargo</th>
                 <th style="padding: 18px 15px; text-align: left; color: var(--primary); font-weight: 600;">Teléfono</th>
                 <th style="padding: 18px 15px; text-align: center; color: var(--primary); font-weight: 600;">Estado</th>
                 <th style="padding: 18px 15px; text-align: center; color: var(--primary); font-weight: 600;">Acciones</th>
@@ -15,46 +15,54 @@
             @forelse($trabajadores as $trabajador)
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                 <td style="padding: 16px 15px; color: white;">{{ $trabajador->id }}</td>
+                
                 <td style="padding: 16px 15px; color: white;">
                     {{ $trabajador->nombres }} {{ $trabajador->apellidos }}
                 </td>
+                
                 <td style="padding: 16px 15px; color: white;">{{ $trabajador->dni }}</td>
                 
-                <!-- Tipo con globo -->
-                <td style="padding: 16px 15px;">
-                    @if($trabajador->tipo === 'asesor')
-                        <span style="background: #3b82f6; color: white; padding: 6px 18px; border-radius: 9999px; font-size: 14px; font-weight: 500;">
-                            Asesor
-                        </span>
-                    @elseif($trabajador->tipo === 'operario')
-                        <span style="background: #87CEEB; color: white; padding: 6px 18px; border-radius: 9999px; font-size: 14px; font-weight: 500;">
-                            Operario
-                        </span>
-                    @else
-                        <span style="background: #6b7280; color: white; padding: 6px 18px; border-radius: 9999px; font-size: 14px;">
-                            {{ ucfirst($trabajador->tipo) }}
-                        </span>
-                    @endif
+<!-- Cargo -->
+<td style="padding: 16px 15px; color: white; max-width: 280px;">
+    <span style="background: #f59e0b; 
+                 color: white; 
+                 padding: 6px 14px; 
+                 border-radius: 9999px; 
+                 font-size: 13px;           /* ← más pequeño */
+                 font-weight: 500;
+                 display: inline-block;
+                 max-width: 100%;
+                 white-space: nowrap;
+                 overflow: hidden;
+                 text-overflow: ellipsis;">
+        {{ \Illuminate\Support\Str::limit($trabajador->cargo ?? 'Sin cargo', 38) }}
+    </span>
+</td>
+                
+                <td style="padding: 16px 15px; color: white;">
+                    {{ $trabajador->telefono ?? '—' }}
                 </td>
-
-                <td style="padding: 16px 15px; color: white;">{{ $trabajador->telefono }}</td>
                 
                 <!-- Estado -->
                 <td style="padding: 16px 15px; text-align: center;">
                     @if($trabajador->estado)
                         <span style="background: #22c55e; color: white; padding: 6px 16px; border-radius: 9999px; font-size: 14px;">Activo</span>
                     @else
-                        <span style="background: #444444; color: white; padding: 6px 16px; border-radius: 9999px; font-size: 14px;">Inactivo</span>
+                        <span style="background: #ef4444; color: white; padding: 6px 16px; border-radius: 9999px; font-size: 14px;">Inactivo</span>
                     @endif
                 </td>
 
                 <td style="padding: 16px 15px; text-align: center;">
                     <div style="display: flex; gap: 8px; justify-content: center;">
                         <a href="{{ route('trabajadores.show', $trabajador->id) }}" 
-                           style="background: #475569; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px;">Ver</a>
+                           style="background: #475569; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                            Ver
+                        </a>
                         
                         <a href="{{ route('trabajadores.edit', $trabajador->id) }}" 
-                           style="background: #eab308; color: black; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px;">Editar</a>
+                           style="background: #eab308; color: black; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                            Editar
+                        </a>
                         
                         <form action="{{ route('trabajadores.destroy', $trabajador->id) }}" method="POST" 
                               onsubmit="return confirm('¿Estás seguro de eliminar este trabajador?')">

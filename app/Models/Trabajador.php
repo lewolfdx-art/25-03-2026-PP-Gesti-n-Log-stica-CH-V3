@@ -18,20 +18,17 @@ class Trabajador extends Model
         'telefono',
         'email',
         'direccion',
-        'tipo',
-        'codigo_vendedor',
-        'comision_porcentaje',
-        'meta_mensual',
-        'zona_asignada',
-        'tipo_comision',
-        'cargo',
-        'licencia',
-        'turno',
-        'salario',
+        'cargo',      // ← Campo principal ahora
         'estado'
     ];
 
     protected $casts = [
         'estado' => 'boolean'
     ];
+
+    // Relación opcional con el modelo Cargo
+    public function cargoRelacion()
+    {
+        return $this->belongsTo(Cargo::class, 'cargo', 'nombre');
+    }
 }

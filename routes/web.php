@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoriaGastoController;
 use App\Http\Controllers\TrabajadorController;
-
+use App\Http\Controllers\CargoController;
 // Rutas públicas
 Route::get('/', function () {
     return redirect()->route('login');
@@ -32,5 +32,6 @@ Route::middleware('auth')->group(function () {
         ->parameters([
             'trabajadores' => 'trabajador'
         ]);
-
+    // ==================== NUEVO: CRUD CARGOS ====================
+    Route::resource('cargos', CargoController::class);
 });

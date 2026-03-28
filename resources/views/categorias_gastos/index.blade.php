@@ -13,7 +13,7 @@
     <!-- Header -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h2 style="color: var(--primary); font-size:32px; margin:0;">
-            Categorías de Gastos
+            Categorías de los Gastos
         </h2>
 
         <a href="{{ route('categorias-gastos.create') }}"
